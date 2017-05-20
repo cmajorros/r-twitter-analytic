@@ -18,4 +18,30 @@ setup_twitter_oauth(api_key,api_secret)
 
 #select Authencation Type
 1
-searchTwitter("Room39")
+
+#Search data from Twitter
+library("twitteR")
+SearchData = searchTwitter("Bruno Mars", n=1000)
+SearchData
+
+#Scrapping Data 
+userTimeline("BrunoMars", n=100, maxID =NULL, excludeReplies = FALSE, includeRts = FALSE)
+
+class(SearchData)
+head(SearchData)
+
+#Cleanning Data
+library(NLP)
+library(tm)
+
+TweetList <- sapply(SearchData, function(x) x$getText()) 
+TweetCorpus <- Corpus(VectorSource(TweetList))
+
+#change data to lower case
+TweetCorpus <- tm_map(TweetCorpus, tolower)
+
+#Remove Stopword
+TweetCorpus <- tm_map(TweetCorpus, function(x)removeWords(x,stopwords()))
+
+#Transform text to Wordcloud Format
+TweerCorpus <- tm_map(PlainTextDocument)
