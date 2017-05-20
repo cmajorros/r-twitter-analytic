@@ -21,7 +21,7 @@ setup_twitter_oauth(api_key,api_secret)
 
 #Search data from Twitter
 library("twitteR")
-SearchData = searchTwitter("Bruno Mars", n=1000)
+SearchData = searchTwitter("Bruno Mars", n=1000,lang = 'en')
 SearchData
 
 #Scrapping Data 
@@ -34,14 +34,39 @@ head(SearchData)
 library(NLP)
 library(tm)
 
+
+
 TweetList <- sapply(SearchData, function(x) x$getText()) 
+
+TweetList <- (TweetList[!is.na(TweetList)])
 TweetCorpus <- Corpus(VectorSource(TweetList))
 
 #change data to lower case
+library("stringi")
+
+
+
 TweetCorpus <- tm_map(TweetCorpus, tolower)
+TweetCorpus <- tm_map(TweetCorpus, removePunctuation)
+
+
 
 #Remove Stopword
 TweetCorpus <- tm_map(TweetCorpus, function(x)removeWords(x,stopwords()))
 
+
 #Transform text to Wordcloud Format
-TweerCorpus <- tm_map(PlainTextDocument)
+TweetCorpus <- tm_map(TweetCorpus,PlainTextDocument)
+
+
+#Wordcloud
+# you need to have wordcloud package first
+library("wordcloud")
+wordcloud(TweetCorpus, min.freq = 5,
+          scale = c(5,1),random.color = T,
+          max.words = 45, random.order = )
+
+#Changing to tdm
+TweetTDM <- TermDocumentMatrix(TweetCorpus)
+TweetTDM
+
