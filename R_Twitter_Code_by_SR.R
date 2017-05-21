@@ -1,8 +1,5 @@
-install.packages(c("devtools", "rjson", "bit64", "httr"))
-
 #RESTART R session!
 
-library(devtools)
 
 library(twitteR)
 
@@ -40,14 +37,13 @@ TweetList <- sapply(SearchData, function(x) x$getText())
 
 TweetList <- (TweetList[!is.na(TweetList)])
 TweetCorpus <- Corpus(VectorSource(TweetList))
+TweetCorpus <-  iconv(TweetCorpus, to ="utf-8")
 
 #change data to lower case
-library("stringi")
 
-
-
-TweetCorpus <- tm_map(TweetCorpus, tolower)
 TweetCorpus <- tm_map(TweetCorpus, removePunctuation)
+TweetCorpus <- tm_map(TweetCorpus, removeNumbers)
+TweetCorpus <- tm_map(TweetCorpus, tolower)
 
 
 
@@ -63,8 +59,8 @@ TweetCorpus <- tm_map(TweetCorpus,PlainTextDocument)
 # you need to have wordcloud package first
 library("wordcloud")
 wordcloud(TweetCorpus, min.freq = 5,
-          scale = c(5,1),random.color = T,
-          max.words = 45, random.order = )
+          scale = c(5,1),random.color = F,
+          max.words = 45, random.order = F )
 
 #Changing to tdm
 TweetTDM <- TermDocumentMatrix(TweetCorpus)
